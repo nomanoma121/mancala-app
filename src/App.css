@@ -1,9 +1,11 @@
 .tables {
-  background-color: yellow;
+  background-color: rgb(219, 207, 192);
   display: flex;
-  margin: 100px auto;
+  margin: 100px auto 0 50px;
   width: 900px;
   justify-content: center;
+  border: 2px solid black;
+  border-radius: 20px;
 }
 
 .pockets button {
@@ -18,8 +20,16 @@
   background-color: lightblue;
 }
 
+.firstPockets button:hover {
+  border: 3px solid blue;
+}
+
 .secondPockets button{
   background-color: orange;
+}
+
+.secondPockets button:hover {
+  border: 3px solid red;
 }
 
 .subPocket {
@@ -33,4 +43,39 @@
   border: 2px solid white;
   border-radius: 20px;
   margin: auto 5px;
+}
+
+.select-container {
+  margin: 20px 50px;
+}
+
+.select-box {
+  flex-direction: column;
+  align-items: center;
+}
+
+.select-label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.custom-select {
+  font-size: 16px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+  margin-left: 8px;
+}
+
+.custom-select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.custom-select:hover {
+  border-color: #007bff;
 }

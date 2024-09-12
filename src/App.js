@@ -56,19 +56,24 @@ function SelectPocekt ({handleNumberOfPocekt, handlePocketNumber}) {
   console.log("SelectPocekt Run");
   return (
     <>
-      <div>
-        <label>ポケット数</label>
-        <select onChange={(e) => handleNumberOfPocekt(Number(e.target.value))}>
+      <div className="select-container">
+      <div className="select-box">
+        <label className="select-label">ポケット数</label>
+        <select 
+          className="custom-select" 
+          onChange={(e) => handleNumberOfPocekt(Number(e.target.value))}
+        >
           <option value={3}>3</option>
           <option value={4}>4</option>
           <option value={5}>5</option>
           <option value={6}>6</option>
         </select>
       </div>
-      <div>
-        <label>ポケットの初期値</label>
+      <div className="select-box">
+        <label className="select-label">ポケットの初期値</label>
         <select 
-          onChange={(e) => handlePocketNumber(Number(e.target.value))}
+          className="custom-select" 
+          onChange={(e) => handlePocketNumber(Number(e.target.value))} 
           defaultValue={3}
         >
           <option value={1}>1</option>
@@ -79,6 +84,7 @@ function SelectPocekt ({handleNumberOfPocekt, handlePocketNumber}) {
           <option value={6}>6</option>
         </select>
       </div>
+    </div>
     </>
   );
 }
