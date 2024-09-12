@@ -1,18 +1,23 @@
 import {useEffect, useState} from "react";
 
-function Pocket({value}) {
+function Pocket({value, index, handleClick}) {
   return (
-    <button className="pocket">{value}</button>
+    <button 
+      className="pocket"
+      onClick={() => handleClick(index, value)}
+    >
+      {value}
+    </button>
   );
 }
 
-function SubPocket() {
+function SubPocket({value}) {
   return (
-    <div className="subPocket">0</div>
+    <div className="subPocket">{value}</div>
   );
 }
 
-function Table({pocketsArray}) {
+function Table({pocketsArray, handleClick}) {
   // 表示する配列を管理
   const [firstPocketsArray, setFirstPocketsArray] = useState([]);
   const [secondPocketsArray, setSecondPocketsArray] = useState([]);
@@ -20,9 +25,11 @@ function Table({pocketsArray}) {
     console.log("effect run");
 
     const middleIndex = Math.floor(pocketsArray.length / 2) - 1;
+    // ここを適当にいじってたらなぜかうまくいった。
     const firstPockets = pocketsArray.slice(0, middleIndex);
-    const secondPockets = pocketsArray.slice(middleIndex + 2, pocketsArray.length - 1);
-
+    const secondPockets = pocketsArray.slice(middleIndex + 1, pocketsArray.length - 1);
+    // 反時計回りに表示するため反転
+    secondPockets.reverse();
     console.log("setする前" + firstPockets);
     console.log("setする前" + secondPockets);
     setFirstPocketsArray(firstPockets);
@@ -31,23 +38,25 @@ function Table({pocketsArray}) {
     console.log(firstPockets);
     console.log(secondPockets);
   },[pocketsArray]);
+  console.log(pocketsArray.length);
+  console.log(pocketsArray);
 
   return (
     <div className="tables">
-      <SubPocket/>
+      <SubPocket value={pocketsArray[pocketsArray.length - 1]}/>
         <div className="pockets">
         <div className="secondPockets">
           {secondPocketsArray.map((value, index) => (
-            <Pocket value={value} key={index}/>
+            <Pocket value={value} key={index} handleClick={handleClick} index={pocketsArray.length - index - 2}/>
           ))}
         </div>
         <div className="firstPockets">
           {firstPocketsArray.map((value, index) => (
-            <Pocket value={value} key={index}/>
+            <Pocket value={value} key={index} handleClick={handleClick} index={index} />
           ))}
         </div>
       </div>
-      <SubPocket/>
+      <SubPocket value={pocketsArray[pocketsArray.length / 2 - 1]}/>
     </div>
   )
 }
@@ -94,12 +103,13 @@ export default function Game() {
   const [numberOfPocket, setNubmerOfPocket] = useState(3);
   const [pocketsArray, setPocektsArray] = useState([3, 3, 3, 0, 3, 3, 3, 0]);
 
-  // 初期配列を値が変更されるたび再生成
+  // 初期配列をポケット数、ポケット値が変更されるたび再生成
   useEffect(() => {
     console.log("配列を再生成");
     const newArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
     newArray[numberOfPocket] = 0;
-    newArray[numberOfPocket * 2 + 2] = 0;
+    newArray[numberOfPocket * 2 + 1] = 0;
+    console.log(newArray.length);
     setPocektsArray(newArray);
   }, [initialPocketNumber, numberOfPocket]);
 
@@ -111,9 +121,25 @@ export default function Game() {
     setInitialPocketNumber(i);
     console.log("handleNumberOfPocekt Run");
   }
+
+  // ここから配列操作
+  const handleClick = (index, value) => {
+    console.log(index);
+    let updateArray = [...pocketsArray];
+    updateArray[index] = 0;
+
+    for(let i = 1; i <= value; i++) {
+      if (index + i > updateArray.length - 1) {
+        index = index - updateArray.length;
+      }
+      updateArray[index + i] = Number(updateArray[index + i]) + 1;
+    }
+    setPocektsArray(updateArray);
+  }
+
   return (
     <>
-      <Table pocketsArray={pocketsArray}/>
+      <Table pocketsArray={pocketsArray} handleClick={handleClick}/>
       <SelectPocekt 
         handleNumberOfPocekt={handleNumberOfPocekt}
         handlePocketNumber={handlePocketNumber}
