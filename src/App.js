@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function Pocket({value}) {
   return (
@@ -13,11 +13,19 @@ function SubPocket() {
 }
 
 function Table({pocketsArray}) {
-  // 配列を半分にし、後手の配列を反転(反時計回りに動くため)
-  const middleIndex = pocketsArray.length / 2 - 1;
-  const firstPocketsArray = pocketsArray.slice(0, (middleIndex));
-  const secondPocketsArray = pocketsArray.slice((middleIndex), middleIndex * 2);
-  secondPocketsArray.reverse();
+  // 表示する配列を管理
+  const [firstPocketsArray, setFirstPocketsArray] = useState([]);
+  const [secondPocketsArray, setSecondPocketsArray] = useState([]);
+  useEffect(() => {
+    console.log("effect run");
+    const middleIndex = pocketsArray.length / 2 - 1;
+    const firstPockets = pocketsArray.slice(0, middleIndex - 1);
+    const secondPockets = pocketsArray.slice(middleIndex + 1, pocketsArray.length - 1);
+    setFirstPocketsArray(firstPockets);
+    setSecondPocketsArray(secondPockets);
+    console.log(firstPockets);
+    console.log(secondPockets);
+  },[pocketsArray]);
 
   return (
     <div className="tables">
@@ -71,9 +79,18 @@ function SelectPocekt ({handleNumberOfPocekt, handlePocketNumber}) {
 
 export default function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
-  const [nubmerOfPocket, setNubmerOfPocket] = useState(3);
-  // 初期配列を作成
-  let defaultArray = Array()
+  const [numberOfPocket, setNubmerOfPocket] = useState(3);
+  const [pocketsArray, setPocektsArray] = useState([3, 3, 3, 0, 3, 3, 3, 0]);
+
+  // 初期配列を値が変更されるたび再生成
+  useEffect(() => {
+    console.log("配列を再生成");
+    const newArray = Array(numberOfPocket + 2).fill(initialPocketNumber);
+    newArray[numberOfPocket / 2] = 0;
+    newArray[numberOfPocket + 1] = 0;
+    setPocektsArray(newArray);
+  }, [initialPocketNumber, numberOfPocket]);
+
   const handleNumberOfPocekt = (i) => {
     setNubmerOfPocket(i);
   }
