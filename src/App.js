@@ -18,11 +18,16 @@ function Table({pocketsArray}) {
   const [secondPocketsArray, setSecondPocketsArray] = useState([]);
   useEffect(() => {
     console.log("effect run");
-    const middleIndex = pocketsArray.length / 2 - 1;
-    const firstPockets = pocketsArray.slice(0, middleIndex - 1);
-    const secondPockets = pocketsArray.slice(middleIndex + 1, pocketsArray.length - 1);
+
+    const middleIndex = Math.floor(pocketsArray.length / 2) - 1;
+    const firstPockets = pocketsArray.slice(0, middleIndex);
+    const secondPockets = pocketsArray.slice(middleIndex + 2, pocketsArray.length - 1);
+
+    console.log("setする前" + firstPockets);
+    console.log("setする前" + secondPockets);
     setFirstPocketsArray(firstPockets);
     setSecondPocketsArray(secondPockets);
+
     console.log(firstPockets);
     console.log(secondPockets);
   },[pocketsArray]);
@@ -48,6 +53,7 @@ function Table({pocketsArray}) {
 }
 
 function SelectPocekt ({handleNumberOfPocekt, handlePocketNumber}) {
+  console.log("SelectPocekt Run");
   return (
     <>
       <div>
@@ -85,17 +91,19 @@ export default function Game() {
   // 初期配列を値が変更されるたび再生成
   useEffect(() => {
     console.log("配列を再生成");
-    const newArray = Array(numberOfPocket + 2).fill(initialPocketNumber);
-    newArray[numberOfPocket / 2] = 0;
-    newArray[numberOfPocket + 1] = 0;
+    const newArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
+    newArray[numberOfPocket] = 0;
+    newArray[numberOfPocket * 2 + 2] = 0;
     setPocektsArray(newArray);
   }, [initialPocketNumber, numberOfPocket]);
 
   const handleNumberOfPocekt = (i) => {
     setNubmerOfPocket(i);
+    console.log("handleNumberOfPocekt Run");
   }
   const handlePocketNumber = (i) => {
     setInitialPocketNumber(i);
+    console.log("handleNumberOfPocekt Run");
   }
   return (
     <>
