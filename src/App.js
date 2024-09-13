@@ -112,7 +112,6 @@ export default function Game() {
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
     
-    // 0.5秒ごとに更新
     let i = 1;
     const interval = setInterval(() => {
       if (i <= value) {
@@ -124,10 +123,15 @@ export default function Game() {
         setPocektsArray([...updateArray]);
         if (i === value) {
           clearInterval(interval);
+          // 追加ターンフラグを初期化
+          setIsAdditionalTurn(false);
           const finalPosition = newIndex;
-          if (finalPosition === (numberOfPocket - 1) || finalPosition === (updateArray.length - 1)) {
+          if (finalPosition === (numberOfPocket) || finalPosition === (updateArray.length - 1)) {
             console.log("追加ターン処理");
             setIsAdditionalTurn(true);
+            handleTurn(true);
+          } else {
+            handleTurn(false);
           }
         }
         i++;
@@ -135,24 +139,21 @@ export default function Game() {
     }, 500);
   }
 
-  useEffect(() => {
-    if (isAdditionalTurn) {
-      // 追加ターン処理をここに記述
-      setIsAdditionalTurn(false); // 追加ターン処理が完了した後にフラグをリセット
-    }
-  }, [isAdditionalTurn]);
-
-  const handleTurn = () => {
-    if (!isAdditionalTurn) {
+  const handleTurn = (additionalTurn) => {
+    console.log("handleTurn Run");
+    if (!additionalTurn) {
+      console.log("通常処理");
       setIsFirst(!isFirst);
+      return;
     }
+    console.log("追加ターン処理(In handleTurn)");
   }
 
   const player = isFirst ? "先手" : "後手";
-
+  const additional = isAdditionalTurn ? "追加" : null;
   return (
     <>
-      <h2>{player}のターン</h2>
+      <h2>{player}の{additional}ターン</h2>
       <Table pocketsArray={pocketsArray} handleClick={handleClick} />
       <SelectPocekt 
         handleNumberOfPocekt={handleNumberOfPocekt}
