@@ -102,6 +102,9 @@ export default function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
   const [numberOfPocket, setNubmerOfPocket] = useState(3);
   const [pocketsArray, setPocektsArray] = useState([3, 3, 3, 0, 3, 3, 3, 0]);
+  const [isFirst, setIsFirst] = useState(true);
+  const [isAdditionalTurn, setIsAdditionalTurn] = useState(false);
+
 
   // 初期配列をポケット数、ポケット値が変更されるたび再生成
   useEffect(() => {
@@ -115,11 +118,9 @@ export default function Game() {
 
   const handleNumberOfPocekt = (i) => {
     setNubmerOfPocket(i);
-    console.log("handleNumberOfPocekt Run");
   }
   const handlePocketNumber = (i) => {
     setInitialPocketNumber(i);
-    console.log("handleNumberOfPocekt Run");
   }
 
   // ここから配列操作
@@ -127,18 +128,37 @@ export default function Game() {
     console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
-
+    
+    // ここのfor文を0.5秒ごとにそれぞれ更新したい
+    let position;
     for(let i = 1; i <= value; i++) {
       if (index + i > updateArray.length - 1) {
         index = index - updateArray.length;
       }
       updateArray[index + i] = Number(updateArray[index + i]) + 1;
+      position = index + i;
+    }
+
+    console.log("位置: " + position);
+    console.log(updateArray.length / 2 - 1);
+    if(position === (updateArray.length / 2 - 1) || position === (updateArray.length - 1)){
+      console.log("追加ターン処理");
+      setIsAdditionalTurn(true);
     }
     setPocektsArray(updateArray);
+    if(!isAdditionalTurn) {
+      setIsFirst(!isFirst);
+    }
+    setIsAdditionalTurn(false);
   }
+
+  // ここからターン処理
+
+  const player = isFirst ? "先手" : "後手";
 
   return (
     <>
+      <h2>{player}のターン</h2>
       <Table pocketsArray={pocketsArray} handleClick={handleClick}/>
       <SelectPocekt 
         handleNumberOfPocekt={handleNumberOfPocekt}
