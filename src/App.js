@@ -108,6 +108,10 @@ export default function Game() {
   }
 
   const handleClick = (index, value) => {
+    // 手番以外のクリックを無視
+    if (!((isFirst && index < numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
+      return;
+    }
     console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
