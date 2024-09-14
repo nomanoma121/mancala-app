@@ -51,14 +51,36 @@ function Table({ pocketsArray, handleClick }) {
   );
 }
 
-function SelectPocekt({ handleNumberOfPocekt, handlePocketNumber }) {
+function UseSelectPocekt({ handleNumberOfPocekt, handlePocketNumber, isPlaying }) {
+  const [selectedNumberOption, setSelectedNumberOption] = useState(3);
+  const [selectedInitialOption, setSelectedInitialOption] = useState(3);
+
+  const handleInitialOption = (e) => {
+    if(isPlaying){
+      e.target.value = selectedInitialOption;
+      alert("ゲーム中の変更はできません");
+    } else {
+      setSelectedInitialOption(e.target.value);
+      handlePocketNumber(Number(e.target.value))
+    }
+  }
+
+  const handleSelectedNumberOption = (e) => {
+    if(isPlaying) {
+      e.target.value = selectedNumberOption;
+      alert("ゲーム中のポケットの変更はできません");
+    } else {
+      setSelectedNumberOption(e.target.value);
+      handleNumberOfPocekt(Number(e.target.value));
+    }
+  }
   return (
     <div className="select-container">
       <div className="select-box">
         <label className="select-label">ポケット数</label>
         <select
           className="custom-select"
-          onChange={(e) => handleNumberOfPocekt(Number(e.target.value))}
+          onChange={(e) => handleSelectedNumberOption(e)}
         >
           <option value={3}>3</option>
           <option value={4}>4</option>
@@ -70,7 +92,7 @@ function SelectPocekt({ handleNumberOfPocekt, handlePocketNumber }) {
         <label className="select-label">ポケットの初期値</label>
         <select
           className="custom-select"
-          onChange={(e) => handlePocketNumber(Number(e.target.value))}
+          onChange={(e) => handleInitialOption(e)}
           defaultValue={3}
         >
           <option value={1}>1</option>
@@ -119,8 +141,10 @@ export default function Game() {
     // 手番以外のクリックを無視
     if (!((isFirst && index < numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
       return;
+    } else if (!isPlaying) {
+    // プレイ中以外のクリックを無視
+      return;
     }
-
     console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
@@ -188,9 +212,10 @@ export default function Game() {
     <>
       <h2>{player}の{additional}ターン</h2>
       <Table pocketsArray={pocketsArray} handleClick={handleClick} />
-      <SelectPocekt 
+      <UseSelectPocekt 
         handleNumberOfPocekt={handleNumberOfPocekt}
         handlePocketNumber={handlePocketNumber}
+        isPlaying={isPlaying}
       />
       <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
     </>
