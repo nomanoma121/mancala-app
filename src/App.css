@@ -1,7 +1,7 @@
 .tables {
   background-color: rgb(219, 207, 192);
   display: flex;
-  margin: 100px auto 0 50px;
+  margin: 0px auto 0 50px;
   width: 900px;
   justify-content: center;
   border: 2px solid black;
@@ -46,13 +46,14 @@
 }
 
 .select-container {
-  margin: 20px 50px;
+  margin: 20px 0 20px 50px;
   display: flex;
 }
 
 .select-box {
   flex-direction: column;
   align-items: center;
+  margin-right: 10px;
 }
 
 .select-label {
@@ -90,9 +91,20 @@
   width: 200px;
   margin-top: 18px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0, 0);
+  margin-left: 30px;
 }
 
 .game-button:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
   transform: translateY(2px);
+}
+
+.message {
+  text-align: center;
+}
+
+.main-container {
+  background-color: rgb(212, 212, 203);
+  width: 1020px;
+  padding: 10px;
 }

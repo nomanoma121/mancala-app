@@ -242,8 +242,8 @@ export default function Game() {
   const message = isFinished ? finishMessage : isPlaying ? playingMessage : "さあ、ゲームを始めよう！";
 
   return (
-    <>
-      <h2>{message}</h2>
+    <div className="main-container">
+      <h2 className="message">{message}</h2>
       <Table pocketsArray={pocketsArray} handleClick={handleClick} />
       <div className="container">
         <UseSelectPocekt 
@@ -253,6 +253,6 @@ export default function Game() {
         />
         <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
       </div>
-    </>
+    </div>
   );
 }
