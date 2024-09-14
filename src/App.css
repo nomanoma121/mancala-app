@@ -47,6 +47,7 @@
 
 .select-container {
   margin: 20px 50px;
+  display: flex;
 }
 
 .select-box {
@@ -78,4 +79,20 @@
 
 .custom-select:hover {
   border-color: #007bff;
+}
+
+.container {
+  display: flex;
+}
+
+.game-button {
+  height: 35px;
+  width: 200px;
+  margin-top: 18px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0, 0);
+}
+
+.game-button:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+  transform: translateY(2px);
 }

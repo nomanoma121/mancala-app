@@ -121,6 +121,7 @@ export default function Game() {
   const [isFirst, setIsFirst] = useState(true);
   const [isAdditionalTurn, setIsAdditionalTurn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
     console.log("配列を再生成");
@@ -138,16 +139,33 @@ export default function Game() {
   }
 
   const handleClick = (index, value) => {
-    // 手番以外のクリックを無視
-    if (!((isFirst && index < numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
-      return;
-    } else if (!isPlaying) {
-    // プレイ中以外のクリックを無視
+    if (!isPlaying) {
+      // プレイ中以外のクリックを無視
+      alert("ゲーム開始ボタンを押してください");
       return;
     }
+    // 手番以外のクリックを無視
+    if (!((isFirst && index <= numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
+      alert("現在は" + winner + "のターンではありません");
+      return;
+    } 
+    
     console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
+
+    // useStateの更新が非同期なためゲーム終了を確認するようのコピー配列を作成（ほかにいい方法ありそう）
+    let copyArray = [...pocketsArray];
+    (() => {
+      let copyIndex = index;
+      copyArray[copyIndex] = 0;
+      for(let i = 1; i < value + 1; i++){
+        if(copyIndex + i > copyArray.length  - 1){
+          copyIndex = copyIndex - copyArray.length;
+        }
+        copyArray[copyIndex + i] = Number(copyArray[copyIndex + i]) + 1; 
+      }
+    })();
     
     let i = 1;
     const interval = setInterval(() => {
@@ -163,7 +181,7 @@ export default function Game() {
           // 追加ターンフラグを初期化
           setIsAdditionalTurn(false);
           // ゲームが終了したかどうかを確認
-          checkGame();
+          checkGame(copyArray);
           const finalPosition = newIndex;
           if (finalPosition === (numberOfPocket) || finalPosition === (updateArray.length - 1)) {
             console.log("追加ターン処理");
@@ -189,35 +207,52 @@ export default function Game() {
   }
 
   const handleGame = () => {
+    if(isPlaying){
+      initializeGame();
+    }
     setIsPlaying(!isPlaying);
   }
 
-  const checkGame = () => {
-    let firstSum = 0;
-    let secondSum = 0;
-    for(let i = 0; i < numberOfPocket - 1; i++) {
-      firstSum += pocketsArray[i];
-      secondSum += pocketsArray[i + numberOfPocket];
-    }
-    if(firstSum === 0 || secondSum === 0){
-      setIsPlaying(false);
+  const checkGame = (array) => {
+    const isFirstSideEmpty = array.slice(0, numberOfPocket).every(value => value === 0);
+    const isSecondSideEmpty = array.slice(numberOfPocket + 1, -1).every(value => value === 0);
+
+    if(isFirstSideEmpty || isSecondSideEmpty){
+      setIsFinished(true);     
     }
   }
 
-
-
+  // ゲームを初期化する関数
+  const initializeGame = () => {
+    const initialArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
+    initialArray[numberOfPocket] = 0;
+    initialArray[initialArray.length - 1] = 0;
+    setPocektsArray(initialArray);
+    setIsFinished(false);
+    setIsAdditionalTurn(false);
+    setIsFirst(true);
+    setIsPlaying(false);
+  }
+  
   const player = isFirst ? "先手" : "後手";
-  const additional = isAdditionalTurn ? "追加" : null;
+  const winner = isFirst ? "後手" : "先手";
+  const additional = isAdditionalTurn ? "追加" : "";
+  const finishMessage = isFinished ? winner + "の勝利です" : null;
+  const playingMessage = player + "の" + additional + "ターン";
+  const message = isFinished ? finishMessage : isPlaying ? playingMessage : "さあ、ゲームを始めよう！";
+
   return (
     <>
-      <h2>{player}の{additional}ターン</h2>
+      <h2>{message}</h2>
       <Table pocketsArray={pocketsArray} handleClick={handleClick} />
-      <UseSelectPocekt 
-        handleNumberOfPocekt={handleNumberOfPocekt}
-        handlePocketNumber={handlePocketNumber}
-        isPlaying={isPlaying}
-      />
-      <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
+      <div className="container">
+        <UseSelectPocekt 
+          handleNumberOfPocekt={handleNumberOfPocekt}
+          handlePocketNumber={handlePocketNumber}
+          isPlaying={isPlaying}
+        />
+        <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
+      </div>
     </>
   );
 }
