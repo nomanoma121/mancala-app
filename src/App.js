@@ -85,12 +85,20 @@ function SelectPocekt({ handleNumberOfPocekt, handlePocketNumber }) {
   );
 }
 
+function GameButton ({isPlaying, handleGame}) {
+  const value = isPlaying ? "ゲームを終了" : "ゲームを開始";
+  return (
+    <button className="game-button" onClick={() => handleGame()}>{value}</button>
+  );
+}
+
 export default function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
   const [numberOfPocket, setNubmerOfPocket] = useState(3);
   const [pocketsArray, setPocektsArray] = useState([3, 3, 3, 0, 3, 3, 3, 0]);
   const [isFirst, setIsFirst] = useState(true);
   const [isAdditionalTurn, setIsAdditionalTurn] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     console.log("配列を再生成");
@@ -112,6 +120,7 @@ export default function Game() {
     if (!((isFirst && index < numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
       return;
     }
+
     console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
@@ -129,6 +138,8 @@ export default function Game() {
           clearInterval(interval);
           // 追加ターンフラグを初期化
           setIsAdditionalTurn(false);
+          // ゲームが終了したかどうかを確認
+          checkGame();
           const finalPosition = newIndex;
           if (finalPosition === (numberOfPocket) || finalPosition === (updateArray.length - 1)) {
             console.log("追加ターン処理");
@@ -153,6 +164,24 @@ export default function Game() {
     console.log("追加ターン処理(In handleTurn)");
   }
 
+  const handleGame = () => {
+    setIsPlaying(!isPlaying);
+  }
+
+  const checkGame = () => {
+    let firstSum = 0;
+    let secondSum = 0;
+    for(let i = 0; i < numberOfPocket - 1; i++) {
+      firstSum += pocketsArray[i];
+      secondSum += pocketsArray[i + numberOfPocket];
+    }
+    if(firstSum === 0 || secondSum === 0){
+      setIsPlaying(false);
+    }
+  }
+
+
+
   const player = isFirst ? "先手" : "後手";
   const additional = isAdditionalTurn ? "追加" : null;
   return (
@@ -163,6 +192,7 @@ export default function Game() {
         handleNumberOfPocekt={handleNumberOfPocekt}
         handlePocketNumber={handlePocketNumber}
       />
+      <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
     </>
   );
 }
