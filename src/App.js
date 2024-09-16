@@ -131,7 +131,7 @@ function GameLog({history, turnHistory}) {
   return (
     <ol className="log-list">
       {history.map((e, index) => (
-        <li key={index}>{valueArray[index + 2]}のターン: {e}</li>
+        <li key={index + 1}>{index + 1}ターン目  {valueArray[index + 2]}のターン: {e}</li>
       ))}
     </ol>
   );
@@ -210,11 +210,18 @@ export default function Game() {
         copyArray[copyIndex + i] = Number(copyArray[copyIndex + i]) + 1; 
       }
     })();
+    console.log(copyArray);
 
-    // historyを更新
-    console.log("copyArray: " + copyArray);
-    setHistory([...history, copyArray]);
-    console.log(history);
+    // historyを更新。ただし更新する際ターン数より配列が大きいときは過剰分を削除する（ログを上書きする）
+    let newHistory = [];
+    if(history.length > nowTurn + 1) {
+      newHistory = [...history].slice(0, nowTurn + 1);
+      setHistory([...newHistory, copyArray]);
+      let newTurnHistory = [...turnHistory].slice(0, nowTurn + 3);
+      setTurnHistory(newTurnHistory);
+    } else {
+      setHistory([...history, copyArray]);
+    }
 
     // 表示する配列操作
     let i = 1;
@@ -288,6 +295,10 @@ export default function Game() {
   }
 
   const preSituation = () => {
+    if(!isPlaying) {
+      alert("ゲームを開始してください");
+      return;
+    }
     console.log(history);
     console.log(history[nowTurn]);
     console.log("一つ戻る");
@@ -317,6 +328,10 @@ export default function Game() {
   }
 
   const nextSituation = () => {
+    if(!isPlaying) {
+      alert("ゲームを開始してください");
+      return;
+    }
     if(history[nowTurn + 1] !== undefined){
       setPocektsArray([...history[nowTurn + 1]]);
       setNowTurn(nowTurn + 1);
@@ -364,13 +379,13 @@ export default function Game() {
             isPlaying={isPlaying}
           />
           <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
-          <button onClick={() => preSituation()}>一つ戻る</button>
-          <button onClick={() => nextSituation()}>一つ進む</button>
+          <button className="btn" onClick={() => preSituation()}>一つ戻る</button>
+          <button className="btn" onClick={() => nextSituation()}>一つ進む</button>
         </div>
         {isPlaying &&
         <>
-          <div>
-            <button onClick={toggleLog}>{isLogVisible ? "ログを非表示" : "ログを表示"}</button>
+          <div className="btn-container">
+            <button className="log-button" onClick={toggleLog}>{isLogVisible ? "ログを非表示" : "ログを表示"}</button>
           </div>
           <AnimatePresence>
             {isLogVisible && (

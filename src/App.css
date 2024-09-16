@@ -1,5 +1,5 @@
 .tables {
-  background-color: rgb(219, 207, 192);
+  background-color: rgb(223, 217, 203);
   display: flex;
   margin: 0px auto 0 50px;
   width: 900px;
@@ -17,23 +17,25 @@
 }
 
 .firstPockets button {
-  background-color: lightblue;
+  background-color: #a0d7f0;
 }
 
 .firstPockets button:hover {
-  border: 3px solid blue;
+  background-color: #8ec6f0;
+  transform: scale(1.05);
 }
 
 .secondPockets button{
-  background-color: orange;
+  background-color: #f4b2a2;
 }
 
 .secondPockets button:hover {
-  border: 3px solid red;
+  background-color: #f09c8f;
+  transform: scale(1.05);
 }
 
 .subPocket {
-  background-color: rgb(79, 236, 62);
+  background-color: rgb(189, 226, 185);
   height: 190px;
   width: 100px;
   display: flex;
@@ -94,6 +96,7 @@
   margin-left: 30px;
   font-weight: bold;
   font-size: 16px;
+  margin-right: 80px;
 }
 
 .game-button:active {
@@ -124,12 +127,43 @@ h1 {
   margin-bottom: 30px;
 }
 
+.log-list li {
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s;
+  padding-left: 20px;
+  margin-bottom: 3px;
+}
+
 .log-list li:hover {
-  background-color: rgb(228, 228, 216);
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
 }
 
 .log-container {
-  background-color: yellow;
-  width: 900px;
-  margin: 0 auto;
+  width: 850px;
+  margin: 0px auto;
+  padding: 20px;
+}
+
+.log-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.log-button {
+  margin-left: -950px;
+  width: 100px;
+  height: 30px;
+}
+
+.btn {
+  height: 30px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.btn-container {
+  margin-left: 1000px;
 }
