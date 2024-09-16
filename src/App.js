@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Pocket({ value, index, handleClick }) {
   return (
@@ -115,9 +116,23 @@ function GameButton ({isPlaying, handleGame}) {
 }
 
 function GameLog({history, turnHistory}) {
+  const valueArray = turnHistory.map((e) => {
+    if(e === 0){
+      return "先手";
+    } else if (e === 1){
+      return "先手の追加";
+    } else if (e === 2) {
+      return "後手";
+    } else {
+      return "後手の追加";
+    }
+});
+
   return (
-    <ol>
-      <li></li>
+    <ol className="log-list">
+      {history.map((e, index) => (
+        <li key={index}>{valueArray[index + 2]}のターン: {e}</li>
+      ))}
     </ol>
   );
 }
@@ -142,6 +157,7 @@ export default function Game() {
   const [nowTurn, setNowTurn] = useState(0);
   // 0: first 1: adFirst: 2: seocnd: 3: adSecondとする
   const [turnHistory, setTurnHistory] = useState([0]);
+  const [isLogVisible, setIsLogVisible] = useState(false);
 
   useEffect(() => {
     console.log("配列を再生成");
@@ -322,6 +338,8 @@ export default function Game() {
       alert("これ以上進めません");
     }  
   }
+
+  const toggleLog = () => setIsLogVisible(!isLogVisible);
   
   // 表示する変数たち
   const player = isFirst ? "先手" : "後手";
@@ -349,8 +367,27 @@ export default function Game() {
           <button onClick={() => preSituation()}>一つ戻る</button>
           <button onClick={() => nextSituation()}>一つ進む</button>
         </div>
-      </div>
-      <GameLog history={history} turnHistory={turnHistory}/>
+        {isPlaying &&
+        <>
+          <div>
+            <button onClick={toggleLog}>{isLogVisible ? "ログを非表示" : "ログを表示"}</button>
+          </div>
+          <AnimatePresence>
+            {isLogVisible && (
+              <motion.div
+                className="log-container"
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }} 
+                transition={{ duration: 0.3 }}
+              >
+                <GameLog history={history} turnHistory={turnHistory} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          </>
+       } 
+      </div>     
     </>
   );
 }

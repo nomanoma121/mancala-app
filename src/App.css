@@ -123,3 +123,13 @@ h1 {
   border-bottom: 2px solid black;
   margin-bottom: 30px;
 }
+
+.log-list li:hover {
+  background-color: rgb(228, 228, 216);
+}
+
+.log-container {
+  background-color: yellow;
+  width: 900px;
+  margin: 0 auto;
+}
