@@ -115,28 +115,28 @@ function GameButton ({isPlaying, handleGame}) {
   );
 }
 
-function GameLog({history, turnHistory}) {
-  const valueArray = turnHistory.map((e) => {
+function GameLog({history, turnHistory, changeTurn}) {
+  let valueArray = turnHistory.map((e, index) => {
     if(e === 0){
-      return "先手";
+      return `${index - 1}ターン目  先手のターン: ${history[index - 2]}`;
     } else if (e === 1){
-      return "先手の追加";
+      return `${index - 1}ターン目  先手の追加ターン: ${history[index - 2]}`;
     } else if (e === 2) {
-      return "後手";
+      return `${index - 1}ターン目  後手のターン: ${history[index - 2]}`;
     } else {
-      return "後手の追加";
+      return `${index - 1}ターン目  後手の追加ターン: ${history[index - 2]}`;
     }
 });
 
+  valueArray = valueArray.slice(2, history.length + 2);
   return (
     <ol className="log-list">
-      {history.map((e, index) => (
-        <li key={index + 1}>{index + 1}ターン目  {valueArray[index + 2]}のターン: {e}</li>
+      {valueArray.map((e, index) => (
+        <li key={index} onClick={() => changeTurn(index)}>{e}</li>
       ))}
     </ol>
   );
 }
-
 
 export default function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
@@ -354,6 +354,25 @@ export default function Game() {
     }  
   }
 
+  const changeTurn = (turn) => {
+    setPocektsArray(history[turn]);
+    setNowTurn(turnHistory[turn]);
+
+    if(turnHistory[turn] === 0){
+      setIsFirst(true);
+      setIsAdditionalTurn(false);
+    } else if (turnHistory[turn] === 1) {
+      setIsFirst(true);
+      setIsAdditionalTurn(true);
+    } else if (turnHistory[turn] === 2) {
+      setIsFirst(false);
+      setIsAdditionalTurn(false);
+    } else {
+      setIsFirst(false);
+      setIsAdditionalTurn(true);
+    }
+  }
+
   const toggleLog = () => setIsLogVisible(!isLogVisible);
   
   // 表示する変数たち
@@ -370,6 +389,7 @@ export default function Game() {
         <h1>マンカラ</h1>
       </div>
       <div className="main-container">
+        <h3 className="turn">{nowTurn + 1}ターン目</h3>
         <h2 className="message">{message}</h2>
         <Table pocketsArray={pocketsArray} handleClick={handleClick} />
         <div className="container">
@@ -396,7 +416,7 @@ export default function Game() {
                 exit={{ opacity: 0 }} 
                 transition={{ duration: 0.3 }}
               >
-                <GameLog history={history} turnHistory={turnHistory} />
+                <GameLog history={history} turnHistory={turnHistory} changeTurn={changeTurn} />
               </motion.div>
             )}
           </AnimatePresence>

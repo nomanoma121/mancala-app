@@ -167,3 +167,9 @@ h1 {
 .btn-container {
   margin-left: 1000px;
 }
+
+.log-list li:active {
+  font-weight: bold;
+}
+
+
