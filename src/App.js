@@ -68,7 +68,7 @@ function UseSelectPocekt({ handleNumberOfPocekt, handlePocketNumber, isPlaying }
   const handleSelectedNumberOption = (e) => {
     if(isPlaying) {
       e.target.value = selectedNumberOption;
-      alert("ゲーム中のポケットの変更はできません");
+      alert("ゲーム中の変更はできません");
     } else {
       setSelectedNumberOption(e.target.value);
       handleNumberOfPocekt(Number(e.target.value));
@@ -114,6 +114,15 @@ function GameButton ({isPlaying, handleGame}) {
   );
 }
 
+function GameLog({history, turnHistory}) {
+  return (
+    <ol>
+      <li></li>
+    </ol>
+  );
+}
+
+
 export default function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
   const [numberOfPocket, setNubmerOfPocket] = useState(3);
@@ -122,6 +131,17 @@ export default function Game() {
   const [isAdditionalTurn, setIsAdditionalTurn] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [history, setHistory] = useState([[...pocketsArray]]);
+  useEffect(() => {
+    if(!isPlaying){
+    setHistory([[...pocketsArray]]);
+    console.log("update initial history");
+    }
+  },[initialPocketNumber, numberOfPocket, pocketsArray]);
+  
+  const [nowTurn, setNowTurn] = useState(0);
+  // 0: first 1: adFirst: 2: seocnd: 3: adSecondとする
+  const [turnHistory, setTurnHistory] = useState([0]);
 
   useEffect(() => {
     console.log("配列を再生成");
@@ -130,6 +150,14 @@ export default function Game() {
     newArray[numberOfPocket * 2 + 1] = 0;
     setPocektsArray(newArray);
   }, [initialPocketNumber, numberOfPocket]);
+
+  useEffect(() => {
+    const turnNum = (isFirst && !isAdditionalTurn) ? 0 :
+                    (isFirst && isAdditionalTurn) ? 1 :
+                    (!isFirst && !isAdditionalTurn) ? 2 : 3;                   
+  setTurnHistory(prevTurnHistory => [...prevTurnHistory, turnNum]);
+  },[isFirst, isAdditionalTurn])
+  
 
   const handleNumberOfPocekt = (i) => {
     setNubmerOfPocket(i);
@@ -154,7 +182,7 @@ export default function Game() {
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
 
-    // useStateの更新が非同期なためゲーム終了を確認するようのコピー配列を作成（ほかにいい方法ありそう）
+    // useStateの更新が非同期なためゲーム終了を確認する用のコピー配列を作成（ほかにいい方法ありそう）
     let copyArray = [...pocketsArray];
     (() => {
       let copyIndex = index;
@@ -166,7 +194,13 @@ export default function Game() {
         copyArray[copyIndex + i] = Number(copyArray[copyIndex + i]) + 1; 
       }
     })();
-    
+
+    // historyを更新
+    console.log("copyArray: " + copyArray);
+    setHistory([...history, copyArray]);
+    console.log(history);
+
+    // 表示する配列操作
     let i = 1;
     const interval = setInterval(() => {
       if (i <= value) {
@@ -195,12 +229,15 @@ export default function Game() {
       }
     }, 500);
   }
-
-  const handleTurn = (additionalTurn) => {
+  
+  const handleTurn = (additionalTurn) => {  
+    console.log(turnHistory);
+    setNowTurn(nowTurn + 1);
     console.log("handleTurn Run");
     if (!additionalTurn) {
       console.log("通常処理");
       setIsFirst(!isFirst);
+      
       return;
     }
     console.log("追加ターン処理(In handleTurn)");
@@ -233,7 +270,60 @@ export default function Game() {
     setIsFirst(true);
     setIsPlaying(false);
   }
+
+  const preSituation = () => {
+    console.log(history);
+    console.log(history[nowTurn]);
+    console.log("一つ戻る");
+    console.log("現在のターン: " + nowTurn);
+    if(nowTurn >= 1) {
+      const preArray = [...history[nowTurn - 1]];
+      setPocektsArray(preArray);
+      setNowTurn(nowTurn - 1);
+
+      if(turnHistory[nowTurn + 1] === 0){
+        setIsFirst(true);
+        setIsAdditionalTurn(false);
+      } else if (turnHistory[nowTurn + 1] === 1) {
+        setIsFirst(true);
+        setIsAdditionalTurn(true);
+      } else if (turnHistory[nowTurn + 1] === 2) {
+        setIsFirst(false);
+        setIsAdditionalTurn(false);
+      } else {
+        setIsFirst(false);
+        setIsAdditionalTurn(true);
+      }
+
+    } else {
+      alert("これ以上戻せません");
+    }
+  }
+
+  const nextSituation = () => {
+    if(history[nowTurn + 1] !== undefined){
+      setPocektsArray([...history[nowTurn + 1]]);
+      setNowTurn(nowTurn + 1);
+
+      if(turnHistory[nowTurn + 3] === 0){
+        setIsFirst(true);
+        setIsAdditionalTurn(false);
+      } else if (turnHistory[nowTurn + 3] === 1) {
+        setIsFirst(true);
+        setIsAdditionalTurn(true);
+      } else if (turnHistory[nowTurn + 3] === 2) {
+        setIsFirst(false);
+        setIsAdditionalTurn(false);
+      } else {
+        setIsFirst(false);
+        setIsAdditionalTurn(true);
+      }
+    } else {
+      alert("これ以上進めません");
+    }  
+  }
   
+  // 表示する変数たち
   const player = isFirst ? "先手" : "後手";
   const winner = isFirst ? "後手" : "先手";
   const additional = isAdditionalTurn ? "追加" : "";
@@ -242,17 +332,25 @@ export default function Game() {
   const message = isFinished ? finishMessage : isPlaying ? playingMessage : "さあ、ゲームを始めよう！";
 
   return (
-    <div className="main-container">
-      <h2 className="message">{message}</h2>
-      <Table pocketsArray={pocketsArray} handleClick={handleClick} />
-      <div className="container">
-        <UseSelectPocekt 
-          handleNumberOfPocekt={handleNumberOfPocekt}
-          handlePocketNumber={handlePocketNumber}
-          isPlaying={isPlaying}
-        />
-        <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
+    <>
+      <div className="header">
+        <h1>マンカラ</h1>
       </div>
-    </div>
+      <div className="main-container">
+        <h2 className="message">{message}</h2>
+        <Table pocketsArray={pocketsArray} handleClick={handleClick} />
+        <div className="container">
+          <UseSelectPocekt 
+            handleNumberOfPocekt={handleNumberOfPocekt}
+            handlePocketNumber={handlePocketNumber}
+            isPlaying={isPlaying}
+          />
+          <GameButton isPlaying={isPlaying} handleGame={handleGame}/>
+          <button onClick={() => preSituation()}>一つ戻る</button>
+          <button onClick={() => nextSituation()}>一つ進む</button>
+        </div>
+      </div>
+      <GameLog history={history} turnHistory={turnHistory}/>
+    </>
   );
 }
