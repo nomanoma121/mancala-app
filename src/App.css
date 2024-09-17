@@ -125,6 +125,7 @@ h1 {
 .header {
   border-bottom: 2px solid black;
   margin-bottom: 30px;
+  width: 100%;
 }
 
 .log-list li {

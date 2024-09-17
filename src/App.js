@@ -114,6 +114,7 @@ function GameButton ({isPlaying, handleGame}) {
 }
 
 function GameLog({history, turnHistory, changeTurn}) {
+  console.log(turnHistory);
   let valueArray = turnHistory.map((e, index) => {
     if(e === 0){
       return `${index - 1}ターン目  先手のターン: ${history[index - 2]}`;
@@ -284,6 +285,7 @@ function Game() {
     setIsFirst(true);
     setIsPlaying(false);
     setWinner();
+    setNowTurn(0);
   }
 
   const preSituation = () => {
@@ -353,13 +355,13 @@ function Game() {
     setPocektsArray(history[turn]);
     setNowTurn(turn);
 
-    if(turnHistory[turn] === 0){
+    if(turnHistory[turn + 2] === 0){
       setIsFirst(true);
       setIsAdditionalTurn(false);
-    } else if (turnHistory[turn] === 1) {
+    } else if (turnHistory[turn + 2] === 1) {
       setIsFirst(true);
       setIsAdditionalTurn(true);
-    } else if (turnHistory[turn] === 2) {
+    } else if (turnHistory[turn + 2] === 2) {
       setIsFirst(false);
       setIsAdditionalTurn(false);
     } else {
