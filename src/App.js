@@ -292,7 +292,7 @@ function Game() {
       return;
     }
     if(isFinished){
-      alert("ゲームは終了しました。新しくゲームを始めてください");
+      setIsFinished(false);
     }
     if(nowTurn >= 1) {
       const preArray = [...history[nowTurn - 1]];
@@ -346,6 +346,10 @@ function Game() {
   }
 
   const changeTurn = (turn) => {
+    if(isFinished){
+      setIsFinished(false);
+    }
+
     setPocektsArray(history[turn]);
     setNowTurn(turn);
 
