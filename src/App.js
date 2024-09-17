@@ -114,7 +114,6 @@ function GameButton ({isPlaying, handleGame}) {
 }
 
 function GameLog({history, turnHistory, changeTurn}) {
-  console.log(turnHistory);
   let valueArray = turnHistory.map((e, index) => {
     if(e === 0){
       return `${index - 1}ターン目  先手のターン: ${history[index - 2]}`;
