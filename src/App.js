@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 function Pocket({ value, index, handleClick }) {
   return (
     <button
@@ -11,11 +10,9 @@ function Pocket({ value, index, handleClick }) {
     </button>
   );
 }
-
 function SubPocket({ value }) {
   return <div className="subPocket">{value}</div>;
 }
-
 function Table({ pocketsArray, handleClick }) {
   // 表示する配列を管理
   const [firstPocketsArray, setFirstPocketsArray] = useState([]);
@@ -29,7 +26,6 @@ function Table({ pocketsArray, handleClick }) {
     setFirstPocketsArray(firstPockets);
     setSecondPocketsArray(secondPockets);
   }, [pocketsArray]);
-
   return (
     <div className="tables">
       <SubPocket value={pocketsArray[pocketsArray.length - 1]} />
@@ -49,11 +45,9 @@ function Table({ pocketsArray, handleClick }) {
     </div>
   );
 }
-
 function UseSelectPocekt({ handleNumberOfPocekt, handlePocketNumber, isPlaying }) {
   const [selectedNumberOption, setSelectedNumberOption] = useState(3);
   const [selectedInitialOption, setSelectedInitialOption] = useState(3);
-
   const handleInitialOption = (e) => {
     if(isPlaying){
       e.target.value = selectedInitialOption;
@@ -63,7 +57,6 @@ function UseSelectPocekt({ handleNumberOfPocekt, handlePocketNumber, isPlaying }
       handlePocketNumber(Number(e.target.value))
     }
   }
-
   const handleSelectedNumberOption = (e) => {
     if(isPlaying) {
       e.target.value = selectedNumberOption;
@@ -105,7 +98,6 @@ function UseSelectPocekt({ handleNumberOfPocekt, handlePocketNumber, isPlaying }
     </div>
   );
 }
-
 function GameButton ({isPlaying, handleGame}) {
   const value = isPlaying ? "ゲームを終了" : "ゲームを開始";
   return (
@@ -114,6 +106,7 @@ function GameButton ({isPlaying, handleGame}) {
 }
 
 function GameLog({history, turnHistory, changeTurn}) {
+  console.log(turnHistory);
   let valueArray = turnHistory.map((e, index) => {
     if(e === 0){
       return `${index - 1}ターン目  先手のターン: ${history[index - 2]}`;
@@ -125,7 +118,6 @@ function GameLog({history, turnHistory, changeTurn}) {
       return `${index - 1}ターン目  後手の追加ターン: ${history[index - 2]}`;
     }
 });
-
   valueArray = valueArray.slice(2, history.length + 2);
   return (
     <ol className="log-list">
@@ -156,14 +148,12 @@ function Game() {
   const [turnHistory, setTurnHistory] = useState([0]);
   const [isLogVisible, setIsLogVisible] = useState(false);
   const [winner, setWinner] = useState();
-
   useEffect(() => {
     const newArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
     newArray[numberOfPocket] = 0;
     newArray[numberOfPocket * 2 + 1] = 0;
     setPocektsArray(newArray);
   }, [initialPocketNumber, numberOfPocket]);
-
   useEffect(() => {
     const turnNum = (isFirst && !isAdditionalTurn) ? 0 :
                     (isFirst && isAdditionalTurn) ? 1 :
@@ -171,14 +161,12 @@ function Game() {
   setTurnHistory(prevTurnHistory => [...prevTurnHistory, turnNum]);
   },[isFirst, isAdditionalTurn])
   
-
   const handleNumberOfPocekt = (i) => {
     setNubmerOfPocket(i);
   }
   const handlePocketNumber = (i) => {
     setInitialPocketNumber(i);
   }
-
   const handleClick = (index, value) => {
     if (!isPlaying) {
       // プレイ中以外のクリックを無視
@@ -193,7 +181,6 @@ function Game() {
     
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
-
     // useStateの更新が非同期なためゲーム終了を確認する用のコピー配列を作成（ほかにいい方法ありそう）
     let copyArray = [...pocketsArray];
     (() => {
@@ -206,7 +193,6 @@ function Game() {
         copyArray[copyIndex + i] = Number(copyArray[copyIndex + i]) + 1; 
       }
     })();
-
     // historyを更新。ただし更新する際ターン数より配列が大きいときは過剰分を削除する（ログを上書きする）
     let newHistory = [];
     if(history.length > nowTurn + 1) {
@@ -217,7 +203,6 @@ function Game() {
     } else {
       setHistory([...history, copyArray]);
     }
-
     // 表示する配列操作
     let i = 1;
     const interval = setInterval(() => {
@@ -254,7 +239,6 @@ function Game() {
       return;
     }
   }
-
   const handleGame = () => {
     if(isPlaying){
       initializeGame();
@@ -265,14 +249,12 @@ function Game() {
   const checkGame = (array) => {
     const isFirstSideEmpty = array.slice(0, numberOfPocket).every(value => value === 0);
     const isSecondSideEmpty = array.slice(numberOfPocket + 1, -1).every(value => value === 0);
-
     if(isFirstSideEmpty || isSecondSideEmpty){
       setIsFinished(true);     
       const copyWinner = isFirstSideEmpty ? "先手" : "後手";
       setWinner(copyWinner);
     }
   }
-
   // ゲームを初期化する関数
   const initializeGame = () => {
     const initialArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
@@ -286,7 +268,6 @@ function Game() {
     setWinner();
     setNowTurn(0);
   }
-
   const preSituation = () => {
     if(!isPlaying) {
       alert("ゲームを開始してください");
@@ -299,7 +280,6 @@ function Game() {
       const preArray = [...history[nowTurn - 1]];
       setPocektsArray(preArray);
       setNowTurn(nowTurn - 1);
-
       if(turnHistory[nowTurn + 1] === 0){
         setIsFirst(true);
         setIsAdditionalTurn(false);
@@ -313,12 +293,10 @@ function Game() {
         setIsFirst(false);
         setIsAdditionalTurn(true);
       }
-
     } else {
       alert("これ以上戻せません");
     }
   }
-
   const nextSituation = () => {
     if(!isPlaying) {
       alert("ゲームを開始してください");
@@ -327,7 +305,6 @@ function Game() {
     if(history[nowTurn + 1] !== undefined){
       setPocektsArray([...history[nowTurn + 1]]);
       setNowTurn(nowTurn + 1);
-
       if(turnHistory[nowTurn + 3] === 0){
         setIsFirst(true);
         setIsAdditionalTurn(false);
@@ -345,15 +322,12 @@ function Game() {
       alert("これ以上進めません");
     }  
   }
-
   const changeTurn = (turn) => {
     if(isFinished){
       setIsFinished(false);
     }
-
     setPocektsArray(history[turn]);
     setNowTurn(turn);
-
     if(turnHistory[turn + 2] === 0){
       setIsFirst(true);
       setIsAdditionalTurn(false);
@@ -368,7 +342,6 @@ function Game() {
       setIsAdditionalTurn(true);
     }
   }
-
   const toggleLog = () => setIsLogVisible(!isLogVisible);
   
   // 表示する変数たち
@@ -378,7 +351,6 @@ function Game() {
   const finishMessage = isFinished ? winner + "の勝利です" : null;
   const playingMessage = player + "の" + additional + "ターン";
   const message = isFinished ? finishMessage : isPlaying ? playingMessage : "さあ、ゲームを始めよう！";
-
   return (
     <>
       <div className="main-container">
@@ -422,7 +394,6 @@ function Game() {
     </>
   );
 }
-
 export default function main () {
   return (
     <>
