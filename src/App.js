@@ -22,8 +22,6 @@ function Table({ pocketsArray, handleClick }) {
   const [secondPocketsArray, setSecondPocketsArray] = useState([]);
   
   useEffect(() => {
-    console.log("effect run");
-
     const middleIndex = Math.floor(pocketsArray.length / 2) - 1;
     const firstPockets = pocketsArray.slice(0, middleIndex);
     const secondPockets = pocketsArray.slice(middleIndex + 1, pocketsArray.length - 1);
@@ -150,7 +148,6 @@ function Game() {
   useEffect(() => {
     if(!isPlaying){
     setHistory([[...pocketsArray]]);
-    console.log("update initial history");
     }
   },[initialPocketNumber, numberOfPocket, pocketsArray]);
   
@@ -158,9 +155,9 @@ function Game() {
   // 0: first 1: adFirst: 2: seocnd: 3: adSecondとする
   const [turnHistory, setTurnHistory] = useState([0]);
   const [isLogVisible, setIsLogVisible] = useState(false);
+  const [winner, setWinner] = useState();
 
   useEffect(() => {
-    console.log("配列を再生成");
     const newArray = Array(numberOfPocket * 2 + 2).fill(initialPocketNumber);
     newArray[numberOfPocket] = 0;
     newArray[numberOfPocket * 2 + 1] = 0;
@@ -190,11 +187,10 @@ function Game() {
     }
     // 手番以外のクリックを無視
     if (!((isFirst && index <= numberOfPocket - 1) || (!isFirst && index > numberOfPocket - 1))) {
-      alert("現在は" + winner + "のターンではありません");
+      alert("現在は" + disPlayer + "のターンではありません");
       return;
     } 
     
-    console.log(index);
     let updateArray = [...pocketsArray];
     updateArray[index] = 0;
 
@@ -210,7 +206,6 @@ function Game() {
         copyArray[copyIndex + i] = Number(copyArray[copyIndex + i]) + 1; 
       }
     })();
-    console.log(copyArray);
 
     // historyを更新。ただし更新する際ターン数より配列が大きいときは過剰分を削除する（ログを上書きする）
     let newHistory = [];
@@ -241,7 +236,6 @@ function Game() {
           checkGame(copyArray);
           const finalPosition = newIndex;
           if (finalPosition === (numberOfPocket) || finalPosition === (updateArray.length - 1)) {
-            console.log("追加ターン処理");
             setIsAdditionalTurn(true);
             handleTurn(true);
           } else {
@@ -254,16 +248,11 @@ function Game() {
   }
   
   const handleTurn = (additionalTurn) => {  
-    console.log(turnHistory);
     setNowTurn(nowTurn + 1);
-    console.log("handleTurn Run");
     if (!additionalTurn) {
-      console.log("通常処理");
-      setIsFirst(!isFirst);
-      
+      setIsFirst(!isFirst);    
       return;
     }
-    console.log("追加ターン処理(In handleTurn)");
   }
 
   const handleGame = () => {
@@ -272,13 +261,15 @@ function Game() {
     }
     setIsPlaying(!isPlaying);
   }
-
+  
   const checkGame = (array) => {
     const isFirstSideEmpty = array.slice(0, numberOfPocket).every(value => value === 0);
     const isSecondSideEmpty = array.slice(numberOfPocket + 1, -1).every(value => value === 0);
 
     if(isFirstSideEmpty || isSecondSideEmpty){
       setIsFinished(true);     
+      const copyWinner = isFirstSideEmpty ? "先手" : "後手";
+      setWinner(copyWinner);
     }
   }
 
@@ -299,10 +290,9 @@ function Game() {
       alert("ゲームを開始してください");
       return;
     }
-    console.log(history);
-    console.log(history[nowTurn]);
-    console.log("一つ戻る");
-    console.log("現在のターン: " + nowTurn);
+    if(isFinished){
+      alert("ゲームは終了しました。新しくゲームを始めてください");
+    }
     if(nowTurn >= 1) {
       const preArray = [...history[nowTurn - 1]];
       setPocektsArray(preArray);
@@ -377,7 +367,7 @@ function Game() {
   
   // 表示する変数たち
   const player = isFirst ? "先手" : "後手";
-  const winner = isFirst ? "後手" : "先手";
+  const disPlayer = isFirst ? "後手" : "先手";
   const additional = isAdditionalTurn ? "追加" : "";
   const finishMessage = isFinished ? winner + "の勝利です" : null;
   const playingMessage = player + "の" + additional + "ターン";
