@@ -137,8 +137,8 @@ function GameLog({history, turnHistory, changeTurn}) {
     </ol>
   );
 }
-
-export default function Game() {
+  
+function Game() {
   const [initialPocketNumber, setInitialPocketNumber] = useState(3);
   const [numberOfPocket, setNubmerOfPocket] = useState(3);
   const [pocketsArray, setPocektsArray] = useState([3, 3, 3, 0, 3, 3, 3, 0]);
@@ -356,7 +356,7 @@ export default function Game() {
 
   const changeTurn = (turn) => {
     setPocektsArray(history[turn]);
-    setNowTurn(turnHistory[turn]);
+    setNowTurn(turn);
 
     if(turnHistory[turn] === 0){
       setIsFirst(true);
@@ -385,12 +385,12 @@ export default function Game() {
 
   return (
     <>
-      <div className="header">
-        <h1>マンカラ</h1>
-      </div>
       <div className="main-container">
-        <h3 className="turn">{nowTurn + 1}ターン目</h3>
-        <h2 className="message">{message}</h2>
+        <h3 className="turn" style={{opacity: isPlaying ? 1 : 0}}>{nowTurn + 1}ターン目</h3>
+        <div className="message-container">
+          <h2 className="message">{message}</h2>
+        </div>
+        <p style={{marginTop: "30px"}}><span style={{color: "blue"}}>青</span>: 先手  <span style={{color: "red"}}>赤</span>: 後手</p>
         <Table pocketsArray={pocketsArray} handleClick={handleClick} />
         <div className="container">
           <UseSelectPocekt 
@@ -423,6 +423,30 @@ export default function Game() {
           </>
        } 
       </div>     
+    </>
+  );
+}
+
+export default function main () {
+  return (
+    <>
+      <div className="header">
+        <h1>マンカラ</h1>
+      </div>
+      <Game />
+      <div className="about-game">
+        <h3>マンカラのルール</h3>
+        <ol>
+          <li>先攻は自分の陣地のいずれかのポケット一か所を選び、そのポケットに入っている石をすべて取ります。</li>
+          <li>取った石は右隣のポケットから反時計回りに1個ずつ置いていきます。</li>
+          <li>最後の石が緑のポケットで止まったら再度自分の番となり、続けてできます。</li>
+          <li>最後の石がそれ以外のポケットに入ったら、後攻の番になります。</li>
+          <li>これらを先攻、後攻が交互に繰り返し、相手より先に自分の陣地にある石を無くした方が勝ちとなります。</li>
+          <a href="https://recreation.or.jp/activities/genki_up/mancala/" target="_blank" rel="noopener noreferrer">※引用元https://recreation.or.jp/activities/genki_up/mancala/</a>
+        </ol>
+        <p>ポケット数、初期値などカスタマイズできます。</p>
+        <a href="https://youtu.be/OL3m2ZbKb1o?si=orJHShWmcIA8yD6W" target="_blank" rel="noopener noreferrer">わかりやすいプレイ動画があったのでこちらも参考にしてください</a>
+      </div>
     </>
   );
 }

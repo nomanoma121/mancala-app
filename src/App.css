@@ -172,4 +172,18 @@ h1 {
   font-weight: bold;
 }
 
+.message-container {
+  width: 400px;
+  float: left;
+  margin-left: 160px;
+}
 
+.turn {
+  float: left;
+  margin-left: 60px;
+}
+
+.about-game {
+  margin: 0 auto;
+  width: 1000px;
+}
