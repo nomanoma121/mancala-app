@@ -283,6 +283,7 @@ function Game() {
     setIsAdditionalTurn(false);
     setIsFirst(true);
     setIsPlaying(false);
+    setWinner();
   }
 
   const preSituation = () => {
@@ -437,6 +438,7 @@ export default function main () {
         <p>ポケット数、初期値などカスタマイズできます。</p>
         <a href="https://youtu.be/OL3m2ZbKb1o?si=orJHShWmcIA8yD6W" target="_blank" rel="noopener noreferrer">わかりやすいプレイ動画があったのでこちらも参考にしてください</a>
       </div>
+      <a href="https://github.com/nomanoma121/mancala-app" target="_blank" rel="noopener noreferrer">コード→https://github.com/nomanoma121/mancala-app</a>
     </>
   );
 }
