@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/mancala-app/static/css/main.3da9ef4e.css",
-    "main.js": "/mancala-app/static/js/main.17055fa9.js",
+    "main.js": "/mancala-app/static/js/main.ab9aa886.js",
     "static/js/453.7eff1489.chunk.js": "/mancala-app/static/js/453.7eff1489.chunk.js",
     "index.html": "/mancala-app/index.html",
     "main.3da9ef4e.css.map": "/mancala-app/static/css/main.3da9ef4e.css.map",
-    "main.17055fa9.js.map": "/mancala-app/static/js/main.17055fa9.js.map",
+    "main.ab9aa886.js.map": "/mancala-app/static/js/main.ab9aa886.js.map",
     "453.7eff1489.chunk.js.map": "/mancala-app/static/js/453.7eff1489.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3da9ef4e.css",
-    "static/js/main.17055fa9.js"
+    "static/js/main.ab9aa886.js"
   ]
 }
